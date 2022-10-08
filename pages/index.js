@@ -14,8 +14,6 @@ import { useRef } from 'react';
 
 
 export default function Home() {
-
-    var flag = false;
     
       var data = {
         datasets: [{
@@ -25,11 +23,26 @@ export default function Home() {
         }]
       };
 
-      const config = {
-        type: 'bubble',
-        data: data,
-        options: {}
+      const options = {
+        scales: {
+            x: {
+  
+              min: -1,
+              max: 1,
+  
+            },
+            y: {
+              
+              min: -1,
+              max: 1,
+              
+            },
+          },
       };
+
+      var particles=[];
+      var Xbest;
+      var Vbest;
 
     const bubbleChart = useRef(null);
       
@@ -57,10 +70,11 @@ export default function Home() {
                 <div className="col-sm-2">
                   {topButtons()}
                   <button onClick={PSO}>abc</button>
-                  <button onClick={toggleFlag}>step</button>
+                  <button onClick={update}>step</button>
                 </div>
                 <div className="col-sm-6">
                     <Bubble ref={bubbleChart}
+                        options={options}
                         data={data}
                         width={400}
                         height={400}
@@ -76,9 +90,6 @@ export default function Home() {
     </div>
   )
 
-function toggleFlag(){
-   flag=true;
-}
 
 function PSO(){
     const c1=2.05;
@@ -86,9 +97,9 @@ function PSO(){
     var r1=Math.random();
     var r2=Math.random();
     const w=0.4;
-    const population=5;
+    const population=40;
     const dim = 2
-    var particles=[];
+    
     const maxItr=100;
     const minx=0;
     const maxx=2*Math.PI;
@@ -107,56 +118,70 @@ function PSO(){
    
 
 
-   var Xbest = particles[0].Xbest;
-   var Vbest = particles[0].Vbest;
+   Xbest = particles[0].Xbest;
+   Vbest = particles[0].Vbest;
 
-   for(var i=0;i<population;i++){
-       if(Vbest < particles[i].Vbest){
-           Vbest=particles[i].Vbest;
-           Xbest=particles[i].Xbest;
-       }
-   }
-
-   var itr=0;
-   while(itr<maxItr){
-       
-       for(var i=0;i<population;i++){
-           for(var j=0;j<dim;j++){
-               r1=Math.random();
-               r2=Math.random();
-
-               particles[i].V[j] = (w*particles[i].V[j]  +  c1*r1*(particles[i].Xbest[j]-particles[i].X[j])  +  c2*r2*(Xbest[j]-particles[i].X[j])); 
-
-               if(particles[i].V[j] < minx){
-                   particles[i].V[j] = minx;
-               }
-               else if(particles[i].V[j] > maxx){
-                   particles[i].V[j] = maxx;
-               }
-           }
-           const b_chart = bubbleChart.current;
-           b_chart.data.datasets[0].data[i]=({
-                x:particles[i].V[0],
-                y:particles[i].V[1],
-                r:5
-                });
    
-           b_chart.update();
-           //alert(itr);
-           
-           for(var j=0;j<dim;j++){
-               particles[i].X[j]+=particles[i].V[j];
-           }
-           particles[i].updateFitness();
-           if(Vbest < particles[i].Vbest){
-               Vbest=particles[i].Vbest;
-               Xbest=particles[i].Xbest;
-           }
-       }
-       itr++;
-   }
+
 
    return Xbest;
+}
+
+function update(){
+
+    //2.05
+
+    const c1=1.4;
+    const c2=1.4;
+    var r1=Math.random();
+    var r2=Math.random();
+    const w=0.4;
+    const population=40;
+    const dim = 2
+    const minx=0;
+    const maxx=2*Math.PI;
+
+    for(var i=0;i<population;i++){
+        if(Vbest < particles[i].Vbest){
+            Vbest=particles[i].Vbest;
+            Xbest=particles[i].Xbest;
+        }
+    }
+
+    for(var i=0;i<population;i++){
+        for(var j=0;j<dim;j++){
+            r1=Math.random();
+            r2=Math.random();
+
+            particles[i].V[j] = (w*particles[i].V[j]  +  c1*r1*(particles[i].Xbest[j]-particles[i].X[j])  +  c2*r2*(Xbest[j]-particles[i].X[j])); 
+
+            if(particles[i].V[j] < minx){
+                particles[i].V[j] = minx;
+            }
+            else if(particles[i].V[j] > maxx){
+                particles[i].V[j] = maxx;
+            }
+        }
+        const b_chart = bubbleChart.current;
+        b_chart.data.datasets[0].data[i]=({
+             x:particles[i].V[0],
+             y:particles[i].V[1],
+             r:5
+             });
+
+        b_chart.update();
+        //alert(itr);
+        
+        for(var j=0;j<dim;j++){
+            particles[i].X[j]+=particles[i].V[j];
+        }
+        particles[i].updateFitness();
+        if(Vbest < particles[i].Vbest){
+            Vbest=particles[i].Vbest;
+            Xbest=particles[i].Xbest;
+        }
+    }
+
 }
 
 }
