@@ -36,6 +36,7 @@ export default function rightTable(){
                                 <div className="form-group">
                                     <label for="position-initialization">Function</label>
                                     <select className="form-control form-control-sm settings create-particles-on-change" id="position-initialization">
+                                        <option value="line">(x+y)</option>
                                         <option value="Sphere">Circle(x^2+y^2)</option>
                                     </select>
                                 </div>

@@ -15,6 +15,7 @@ import { useRef } from 'react';
 
 export default function Home() {
     
+    var isStarted = false;
       var data = {
         datasets: [{
           label: 'First Dataset',
@@ -42,7 +43,7 @@ export default function Home() {
 
       var particles=[];
       var Xbest;
-      var Vbest;
+      var Fbest;
 
     const bubbleChart = useRef(null);
       
@@ -68,9 +69,27 @@ export default function Home() {
         <div className="container ">
             <div className="row">
                 <div className="col-sm-2">
-                  {topButtons()}
-                  <button onClick={PSO}>abc</button>
-                  <button onClick={update}>step</button>
+                <div className="row toolbar">
+                <div className="col-9">
+                    <div className="row">
+                        <div className="col-9">
+                            <div className="btn-group" role="group">
+                                <button type="button" className="btn btn-success btn-sm btn-play" onClick={PSO}>Play</button>
+                                <button type="button" className="btn btn-success btn-sm btn-step" onClick={update}> Step</button>
+                                <button type="button" className="btn btn-success btn-sm btn-stop" disabled><i className="fas fa-stop"></i> Stop</button>
+                                <button type="button" className="btn btn-success btn-sm btn-restart" onClick={restart}>Restart</button>
+                            </div>
+                        </div>
+                        <div className="col-3">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div className="col-3">
+                </div>
+            </div>
+                  {/* <button onClick={PSO}>abc</button>
+                  <button onClick={update}>step</button> */}
                 </div>
                 <div className="col-sm-6">
                     <Bubble ref={bubbleChart}
@@ -90,8 +109,16 @@ export default function Home() {
     </div>
   )
 
+function restart(){
+    particles= [];
+    const b_chart = bubbleChart.current;
+    b_chart.data.datasets[0].data=[];
+    b_chart.update();
+    PSO();
+}
 
 function PSO(){
+    isStarted= true;
    const population=40;
    for(var i=0;i<population;i++){
        particles.push(new Particle());
@@ -99,12 +126,12 @@ function PSO(){
        b_chart.data.datasets[0].data.push({
            x:particles[i].X[0],
            y:particles[i].X[1],
-           r:3,
+           r:2,
          });
        b_chart.update();
    }
    Xbest = particles[0].Xbest;
-   Vbest = particles[0].Vbest;
+   Fbest = particles[0].fbest;
 }
 
 function x(){
@@ -114,61 +141,66 @@ function x(){
 }
 
 function update(){
-    const c1=2.05;
-    const c2=2.05;
-    var r1;
-    var r2;
-    const w=0.4;
-    const population=40;
-    const dim = 2
-    const minv=0;
-    const maxv=25;
-    const minx=-5;
-    const maxx=5;
-
-    for(var i=0;i<population;i++){
-        if(Vbest[0]+Vbest[1] > particles[i].fitness()){
-            Vbest=particles[i].Vbest;
-            Xbest=particles[i].Xbest;
-        }
-    }
-
-    for(var i=0;i<population;i++){
-        for(var j=0;j<dim;j++){
-            r1=Math.random();
-            r2=Math.random();
-
-            particles[i].V[j] = (w*particles[i].V[j]  +  c1*r1*(particles[i].Xbest[j]-particles[i].X[j])  +  c2*r2*(Xbest[j]-particles[i].X[j])); 
-
-            if(particles[i].V[j] < minv){
-                particles[i].V[j] = minv;
-            }
-            else if(particles[i].V[j] > maxv){
-                particles[i].V[j] = maxv;
+  
+    if(isStarted){
+        const c1=2.05;
+        const c2=2.05;
+        var r1;
+        var r2;
+        const w=0.4;
+        const population=40;
+        const dim = 2
+        const minv=-1;
+        const maxv=1;
+        const minx=-5;
+        const maxx=5;
+    
+        for(var i=0;i<population;i++){
+            if(Fbest > particles[i].fbest){
+                Fbest=particles[i].fbest;
+                Xbest=particles[i].Xbest;
             }
         }
-        const b_chart = bubbleChart.current;
-        b_chart.data.datasets[0].data[i]=({
-             x:particles[i].X[0],
-             y:particles[i].X[1],
-             r:5,
-             });
+    
+        for(var i=0;i<population;i++){
+            for(var j=0;j<dim;j++){
+                r1=Math.random();
+                r2=Math.random();
+    
+                particles[i].V[j] = (w*particles[i].V[j]  +  c1*r1*(particles[i].Xbest[j]-particles[i].X[j])  +  c2*r2*(Xbest[j]-particles[i].X[j])); 
+    
+                if(particles[i].V[j] < minv){
+                    particles[i].V[j] = minv;
+                }
+                else if(particles[i].V[j] > maxv){
+                    particles[i].V[j] = maxv;
+                }
+            }
+            
+            for(var j=0;j<dim;j++){
+                particles[i].X[j]+=particles[i].V[j];
+                if(particles[i].X[j] < minx){
+                    particles[i].X[j] = minx;
+                }
+                else if(particles[i].X[j] > maxx){
+                    particles[i].X[j] = maxx;
+                }
+            }
 
-        b_chart.update();
-        
-        for(var j=0;j<dim;j++){
-            particles[i].X[j]+=particles[i].V[j];
-            if(particles[i].X[j] < minx){
-                particles[i].X[j] = minx;
+            const b_chart = bubbleChart.current;
+            b_chart.data.datasets[0].data[i]=({
+                 x:particles[i].X[0],
+                 y:particles[i].X[1],
+                 r:2,
+                 });
+    
+            b_chart.update();
+            
+            particles[i].updateFitness();
+            if(Fbest > particles[i].Vbest){
+                Fbest=particles[i].fbest;
+                Xbest=particles[i].Xbest;
             }
-            else if(particles[i].X[j] > maxx){
-                particles[i].X[j] = maxx;
-            }
-        }
-        particles[i].updateFitness();
-        if(Vbest > particles[i].Vbest){
-            Vbest=particles[i].Vbest;
-            Xbest=particles[i].Xbest;
         }
     }
 
@@ -190,7 +222,7 @@ class Particle{
 
         for(var i=0;i<dim;i++){
             this.X.push(Math.random()*(10)-5);
-            this.V.push(this.X[i]*this.X[i]);
+            this.V.push(Math.random()*2-1);
         }
 
         this.fbest = this.fitness();
@@ -198,14 +230,14 @@ class Particle{
     }
 
     updateFitness(){
-        if(this.fitness() < this.Vbest){
-            this.Vbest = V;
-            this.Xbest = X;
+        if(this.fitness() < this.fbest){
+            this.fbest = this.fitness();
+            this.Xbest = this.X;
         }
     }
 
     fitness(){
-        return this.V[0]+this.V[1];
+        return this.X[0]+this.X[1];
     }
 
 };
