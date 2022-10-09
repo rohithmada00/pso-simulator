@@ -18,7 +18,7 @@ export default function Home() {
     var isStarted = false;
       var data = {
         datasets: [{
-          label: 'First Dataset',
+          label: '(x,y)',
           data: [],
           backgroundColor: 'rgb(255, 99, 132)'
         }]
