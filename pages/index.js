@@ -126,7 +126,7 @@ function PSO(){
        b_chart.data.datasets[0].data.push({
            x:particles[i].X[0],
            y:particles[i].X[1],
-           r:2,
+           r:3,
          });
        b_chart.update();
    }
@@ -145,8 +145,8 @@ function update(){
     if(isStarted){
         const c1=2.05;
         const c2=2.05;
-        var r1=0.5;
-        var r2=0.5;
+        var r1;
+        var r2;
         const w=0.4;
         const population=40;
         const dim = 2
@@ -164,8 +164,8 @@ function update(){
     
         for(var i=0;i<population;i++){
             for(var j=0;j<dim;j++){
-                //r1=Math.random();
-                //r2=Math.random();
+                r1=Math.random();
+                r2=Math.random();
     
                 particles[i].V[j] = (w*particles[i].V[j]  +  c1*r1*(particles[i].Xbest[j]-particles[i].X[j])  +  c2*r2*(Xbest[j]-particles[i].X[j])); 
     
@@ -191,7 +191,7 @@ function update(){
             b_chart.data.datasets[0].data[i]=({
                  x:particles[i].X[0],
                  y:particles[i].X[1],
-                 r:2,
+                 r:3,
                  });
     
             b_chart.update();
@@ -221,8 +221,8 @@ class Particle{
         this.V = [];
 
         for(var i=0;i<dim;i++){
-            this.X.push(Math.floor((Math.random()*(10)-5)));
-            this.V.push(Math.floor(Math.random()*2-1));
+            this.X.push(Math.random()*(10)-5);
+            this.V.push(Math.random()*2-1);
         }
 
         this.fbest = this.fitness();
