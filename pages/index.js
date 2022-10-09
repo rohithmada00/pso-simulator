@@ -28,14 +28,14 @@ export default function Home() {
         scales: {
             x: {
   
-              min: -5,
-              max: 5,
+              min: -6,
+              max: 6,
   
             },
             y: {
               
-              min: -5,
-              max: 5,
+              min: -6,
+              max: 6,
               
             },
           },
