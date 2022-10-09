@@ -1,9 +1,10 @@
 
 
 export default function rightTable(){
+    var cx = "-5<=x,y<=5";
     return (
         <div className="card">
-                        <div className="card-header">Settings</div>
+                        <div className="card-header">Configuration(To be implemented)</div>
                         <div className="card-body">
                             <form className="form-optimize">
                                 <div className="form-group">
@@ -12,51 +13,65 @@ export default function rightTable(){
                                 </div>
                                 
                                 <div className="row">
-                                    <div className="col-6">
+                                    <div className="col-4">
                                         <div className="form-group">
                                             <label for="param-c1">C1</label>
-                                            <input type="number" id="param-c1" className="form-control form-control-sm change-parameters" required min="0.0" max="5" step="0.01" value="1.4" autocomplete="off"/>
+                                            <input type="number" id="param-c1" className="form-control form-control-sm change-parameters" required min="0.0" max="5" step="0.01" value="2.05" autocomplete="off"/>
                                         </div>
                                     </div>
-                                    <div className="col-6">
+                                    <div className="col-4">
                                         <div className="form-group">
                                             <label for="param-c1">C2</label>
-                                            <input type="number" id="param-c2" className="form-control form-control-sm change-parameters" required min="0.0" max="5" step="0.01" value="1.4" autocomplete="off"/>
+                                            <input type="number" id="param-c2" className="form-control form-control-sm change-parameters" required min="0.0" max="5" step="0.01" value="2.05" autocomplete="off"/>
+                                        </div>
+                                    </div>
+                                    <div className="col-4">
+                                        <div className="form-group">
+                                            <label for="param-w">w</label>
+                                            <input type="number" id="param-w" className="form-control form-control-sm change-parameters" required min="0.0" max="1" step="0.01" value="0.4" autocomplete="off"/>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <div className="form-group">
-                                    <label for="position-initialization">Position Initialization</label>
+                                    <label for="position-initialization">Function</label>
                                     <select className="form-control form-control-sm settings create-particles-on-change" id="position-initialization">
-                                        <option value="fixed-value-initialization">Fixed Value [v=0]</option>
-                                        <option value="random-initialization">Random [0,1]</option>
-                                        <option selected value="problem-range-initialization">Problem Range</option>
-                                        <option value="uniformly-initialization">Uniformly</option>
+                                        <option value="Sphere">Circle(x^2+y^2)</option>
                                     </select>
                                 </div>
                                 <div className="form-group">
-                                    <label for="velocity-initialization">Velocity Initialization</label>
+                                    <label for="constraints">Constraints</label>
                                     <select className="form-control form-control-sm settings dispatch-velocity-initialization should-fire-init" id="velocity-initialization">
-                                        <option selected value="fixed-value-initialization">Fixed Value [v=0]</option>
-                                        <option value="random-initialization">Random [0,1]</option>
-                                        <option value="problem-range-initialization">Problem Range</option>
-                                        <option value="uniformly-initialization">Uniformly</option>
-                                    </select>
+                                        <option selected value="constraint">{cx}</option>
+                                    </select> 
                                 </div>
-                                <div className="form-check">
-                                    <input type="checkbox" className="form-check-input settings change-parameters" id="keep-problems-range" checked />
-                                    <label className="form-check-label" for="keep-problems-range">Keep Problem's Range</label>
-                                </div>
-                                <div className="form-check">
-                                    <input type="checkbox" className="form-check-input settings change-parameters" id="change-velocity" />
-                                    <label className="form-check-label" for="change-velocity">Change Velocity</label>
-                                </div>
-                                <div className="form-check">
-                                    <input type="checkbox" className="form-check-input settings change-parameters" id="decrease-inertia" checked />
-                                    <label className="form-check-label" for="decrease-inertia">Decrease Inertia</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioMinimization" checked/>
+                                    <label class="form-check-label" for="flexRadioMinimization">
+                                        Minimization
+                                    </label>
+                                    </div>
+                                    <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioMaximization" />
+                                    <label class="form-check-label" for="flexRadioMaximization">
+                                        Maximization
+                                    </label>
                                 </div>
                             </form>
+                            <div className="row toolbar">
+                            <div className="col-9">
+                                <div className="row">
+                                    <div className="col-9">
+                                        <div className="btn-group" >
+                                            <button type="button" className="btn btn-success btn-sm btn-stop" disabled><i className="fas fa-stop"></i>Optimize</button>
+                                        </div>
+                                    </div>
+                                    <div className="col-3">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+            </div>
                         </div>
                     </div>
     )
